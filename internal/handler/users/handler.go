@@ -6,6 +6,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"github.com/ymoutella/king-poker-bk/internal/database"
+	"github.com/ymoutella/king-poker-bk/internal/domain"
 )
 
 func GetUsers(c *gin.Context) {
@@ -31,9 +33,9 @@ func GetUser(c *gin.Context) {
 }
 
 func CreateUser(c *gin.Context) {
-	var user CreateUserParam
+	var paramCreate CreateUserParam
 
-	if err := c.ShouldBindJSON(&user); err != nil {
+	if err := c.ShouldBindJSON(&paramCreate); err != nil {
 
 		validationErrors, ok := err.(validator.ValidationErrors)
 		if ok {
@@ -59,8 +61,33 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
+	db, err := database.PostgresDB()
+
+	if err != nil {
+		panic("Deu ruim na conexão")
+	}
+
+	db.AutoMigrate(domain.User{})
+
+	var user domain.User = domain.User{
+		Email:     paramCreate.Email,
+		Password:  paramCreate.Password,
+		FirstName: paramCreate.FirstName,
+		LastName:  paramCreate.LastName,
+	}
+
+	result := db.Create(&user)
+
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Error in user creation",
+			"error":   result.Error,
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"message": "User created",
-		"data":    "data",
+		"data":    user,
 	})
 }
