@@ -7,6 +7,7 @@ import (
 )
 
 func TestGetAll(t *testing.T) {
+	resetTestDatabase(t)
 
 	createUserUsecase, err := NewCreateUserUsecase()
 

@@ -1,13 +1,14 @@
 package repository
 
 import (
+	"github.com/google/uuid"
 	"github.com/ymoutella/king-poker-bk/internal/domain"
 	"gorm.io/gorm"
 )
 
 type UserRepository interface {
 	GetAll(page int, pageSize int) []domain.User
-	GetByID(id uint) (*domain.User, error)
+	GetByID(id uuid.UUID) (*domain.User, error)
 	Create(user *domain.User) (*domain.User, error)
 	Update(user *domain.User) (*domain.User, error)
 	Delete(id uint) error
@@ -17,7 +18,7 @@ type userRepository struct {
 	db *gorm.DB
 }
 
-func (repository userRepository) GetByID(id uint) (*domain.User, error) {
+func (repository userRepository) GetByID(id uuid.UUID) (*domain.User, error) {
 	var user domain.User
 	result := repository.db.First(&user, id)
 

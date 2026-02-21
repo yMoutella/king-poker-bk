@@ -8,6 +8,7 @@ import (
 )
 
 func TestCreateUser(t *testing.T) {
+	resetTestDatabase(t)
 
 	u, err := NewCreateUserUsecase()
 
