@@ -13,6 +13,10 @@ func PostgresDB() (*gorm.DB, error) {
 		return nil, err
 	}
 
-	return db, nil
+	return db, err
 
+}
+
+func MockDB() any {
+	return nil
 }
