@@ -10,7 +10,7 @@ import (
 func TestCreateUser(t *testing.T) {
 	resetTestDatabase(t)
 
-	u, err := NewCreateUserUsecase()
+	u, err := FactoryCreateUserUS()
 
 	if err != nil {
 		t.Fatalf("Error creating createUserUsecase")

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/ymoutella/king-poker-bk/internal/domain"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -51,6 +52,9 @@ func PostgresDB() (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	db.AutoMigrate(
+		&domain.User{})
 
 	return db, err
 

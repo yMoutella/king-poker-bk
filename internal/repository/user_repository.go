@@ -26,12 +26,19 @@ func (repository userRepository) GetByID(id uuid.UUID) (*domain.User, error) {
 		return nil, result.Error
 	}
 
+	user.Password = ""
+
 	return &user, nil
 }
 
 func (repository userRepository) GetAll(page int, pageSize int) []domain.User {
 	var users []domain.User
 	repository.db.Offset((page - 1) * pageSize).Limit(pageSize).Find(&users)
+
+	for _, user := range users {
+		user.Password = ""
+	}
+
 	return users
 }
 

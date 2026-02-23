@@ -6,31 +6,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
-	"github.com/ymoutella/king-poker-bk/internal/database"
 	"github.com/ymoutella/king-poker-bk/internal/domain"
+	usecases "github.com/ymoutella/king-poker-bk/internal/usecases/user"
 )
-
-func GetUsers(c *gin.Context) {
-
-	c.JSON(200, gin.H{
-		"message": "users handler",
-	})
-}
-
-func GetUser(c *gin.Context) {
-	var user GetUserParam
-	if err := c.ShouldBindUri(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "invalid user id",
-		})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"message": "User returned",
-		"data":    "data",
-	})
-}
 
 func CreateUser(c *gin.Context) {
 	var paramCreate CreateUserParam
@@ -61,33 +39,35 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	db, err := database.PostgresDB()
+	uc, err := usecases.FactoryCreateUserUS()
 
 	if err != nil {
-		panic("Deu ruim na conexão")
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Error in user creation",
+			"error":   err.Error,
+		})
+		return
 	}
 
-	db.AutoMigrate(domain.User{})
-
-	var user domain.User = domain.User{
+	user := &domain.User{
 		Email:     paramCreate.Email,
 		Password:  paramCreate.Password,
 		FirstName: paramCreate.FirstName,
 		LastName:  paramCreate.LastName,
 	}
 
-	result := db.Create(&user)
+	createdUser, err := uc.Execute(user)
 
-	if result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
+	if err != nil {
+		c.JSON(http.StatusConflict, gin.H{
 			"message": "Error in user creation",
-			"error":   result.Error,
+			"error":   err.Error,
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
+	c.JSON(http.StatusCreated, gin.H{
 		"message": "User created",
-		"data":    user,
+		"data":    createdUser,
 	})
 }

@@ -9,7 +9,7 @@ import (
 func TestGetAll(t *testing.T) {
 	resetTestDatabase(t)
 
-	createUserUsecase, err := NewCreateUserUsecase()
+	createUserUsecase, err := FactoryCreateUserUS()
 
 	if err != nil {
 		t.Fatalf("Error creating createUserUsecase")
@@ -24,7 +24,7 @@ func TestGetAll(t *testing.T) {
 
 	createUserUsecase.Execute(&user)
 
-	u := NewGetAllUserUsecase()
+	u := FactoryGetAllUsersUS()
 
 	returnedUser, err := u.Execute(1, 1)
 

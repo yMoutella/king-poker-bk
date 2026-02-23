@@ -14,7 +14,7 @@ type getAllUseCase struct {
 	rep repository.UserRepository
 }
 
-func NewGetAllUserUsecase() *getAllUseCase {
+func FactoryGetAllUsersUS() *getAllUseCase {
 	db, err := database.PostgresDB()
 
 	if err != nil {

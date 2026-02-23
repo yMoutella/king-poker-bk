@@ -7,14 +7,6 @@ import (
 
 func main() {
 
-	// db, err := database.PostgresDB()
-
-	// if err != nil {
-	// 	panic("Deu ruim na conexão")
-	// }
-
-	// db.AutoMigrate(domain.User{})
-
 	router := gin.Default()
 	router.GET("/users", users.GetUsers)
 	router.GET("/users/:id", users.GetUser)

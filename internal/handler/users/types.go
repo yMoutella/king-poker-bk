@@ -10,3 +10,8 @@ type CreateUserParam struct {
 	FirstName string `json:"firstName" binding:"required"`
 	LastName  string `json:"lastName" binding:"required"`
 }
+
+type GetAllUsersParam struct {
+	Page     int `form:"page" binding:"required"`
+	PageSize int `form:"pageSize" binding:"required"`
+}

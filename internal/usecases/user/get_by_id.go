@@ -15,7 +15,7 @@ type getByIdUsecase struct {
 	rep repository.UserRepository
 }
 
-func CreateNewGetByIdUsecase() *getByIdUsecase {
+func FactoryGetByIdUS() *getByIdUsecase {
 	db, err := database.PostgresDB()
 
 	if err != nil {

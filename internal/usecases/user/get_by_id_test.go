@@ -10,7 +10,7 @@ import (
 func TestGetByID(t *testing.T) {
 	resetTestDatabase(t)
 
-	createUserUsecase, err := NewCreateUserUsecase()
+	createUserUsecase, err := FactoryCreateUserUS()
 	if err != nil {
 		t.Fatalf("Error creating createUserUsecase")
 	}
@@ -27,7 +27,7 @@ func TestGetByID(t *testing.T) {
 		t.Fatalf("Error executing createUserUsecase")
 	}
 
-	u := CreateNewGetByIdUsecase()
+	u := FactoryGetByIdUS()
 	returnedUser, err := u.Execute(createdUser.ID)
 	if err != nil {
 		t.Fatalf("Error executing getByIdUsecase")
