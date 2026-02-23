@@ -9,7 +9,6 @@ import (
 )
 
 func GetUsers(c *gin.Context) {
-
 	var params GetAllUsersParam
 	if err := c.BindQuery(&params); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
