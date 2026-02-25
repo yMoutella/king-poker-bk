@@ -1,14 +1,16 @@
-package auth
+package login
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	usecases "github.com/ymoutella/king-poker-bk/internal/usecases/auth"
 )
 
-func Auth(c *gin.Context) {
+func Login(c *gin.Context) {
 
 	var params AuthParams
 
@@ -31,7 +33,21 @@ func Auth(c *gin.Context) {
 		}
 	}
 
-	// Call the auth use case (have to write)
+	fmt.Print(params.Email, params.Password)
+	us := usecases.FactoryAuthUseCase()
 
-	return
+	token, err := us.Execute(params.Email, params.Password)
+
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"message": "Invalid credentials",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Success!",
+		"token":   token,
+	})
+
 }

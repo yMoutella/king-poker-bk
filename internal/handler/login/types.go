@@ -1,4 +1,4 @@
-package auth
+package login
 
 type AuthParams struct {
 	Email    string `json:"email" binding:"required"`

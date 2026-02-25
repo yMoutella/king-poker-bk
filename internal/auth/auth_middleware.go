@@ -1,11 +1,13 @@
 package auth
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	usecases "github.com/ymoutella/king-poker-bk/internal/usecases/auth"
 )
 
 func AuthMiddleware() gin.HandlerFunc {
@@ -22,9 +24,14 @@ func AuthMiddleware() gin.HandlerFunc {
 			tokenString = tokenString[7:]
 		}
 
-		token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
-			return os.Getenv("JWT_SECRET"), nil
+		secret := []byte(os.Getenv("JWT_SECRET"))
+		token, err := jwt.ParseWithClaims(tokenString, &usecases.Claims{}, func(token *jwt.Token) (any, error) {
+			return secret, nil
 		})
+
+		fmt.Print("\n token with claims: ", token.Claims)
+		fmt.Print("\n Error: ", err)
+		fmt.Print("\n Token error: ", token.Valid)
 
 		if err != nil || !token.Valid {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
@@ -32,9 +39,9 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		if claims, ok := token.Claims.(*Claims); ok {
-			c.Set("username", claims.Username)
+		if claims, ok := token.Claims.(*usecases.Claims); ok {
 			c.Set("email", claims.Email)
+			c.Set("role", claims.Role)
 			c.Next()
 		} else {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token claims"})

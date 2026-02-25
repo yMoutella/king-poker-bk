@@ -9,6 +9,7 @@ import (
 type UserRepository interface {
 	GetAll(page int, pageSize int) []domain.User
 	GetByID(id uuid.UUID) (*domain.User, error)
+	GetByEmail(email string) (*domain.User, error)
 	Create(user *domain.User) (*domain.User, error)
 	Update(user *domain.User) (*domain.User, error)
 	Delete(id uint) error
@@ -73,6 +74,18 @@ func (repository userRepository) Delete(id uint) error {
 	}
 
 	return nil
+}
+
+func (repository userRepository) GetByEmail(email string) (*domain.User, error) {
+	var user domain.User
+	result := repository.db.Where("email = ?", email).First(&user)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &user, nil
+
 }
 
 func NewUserRepository(db *gorm.DB) UserRepository {
