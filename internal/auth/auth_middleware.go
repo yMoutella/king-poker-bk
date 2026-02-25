@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 
@@ -28,10 +27,6 @@ func AuthMiddleware() gin.HandlerFunc {
 		token, err := jwt.ParseWithClaims(tokenString, &usecases.Claims{}, func(token *jwt.Token) (any, error) {
 			return secret, nil
 		})
-
-		fmt.Print("\n token with claims: ", token.Claims)
-		fmt.Print("\n Error: ", err)
-		fmt.Print("\n Token error: ", token.Valid)
 
 		if err != nil || !token.Valid {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
