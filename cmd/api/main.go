@@ -12,13 +12,13 @@ func main() {
 
 	router := gin.Default()
 	router.POST("/login", login.Login)
+	router.POST("/users", users.CreateUser)
 
 	authorized := router.Group("/")
 	authorized.Use(auth.AuthMiddleware())
 	{
 		authorized.GET("/users", users.GetUsers)
 		authorized.GET("/users/:id", users.GetUser)
-		authorized.POST("/users", users.CreateUser)
 	}
 	router.Run()
 }
